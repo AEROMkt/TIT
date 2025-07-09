@@ -58,24 +58,41 @@
   <script>
     const travelerLookup = {
       '5452': {
-        projectCode: 5452, passengerName: 'Jackson Olaf', phone: '2056547894',
-        email: 'jacks@gmail.com', airline: 'DL', flightNumber: '6545',
-        route: 'LAX-PHX', flightTime: '2:30pm - 2:40pm', flightLocator: 'ASDKJA',
-        ticketPrice: '', pickupLocation: '', dropLocation: '',
-        airBookedDate: '2025-07-09', notes: ''
+        projectCode: 5452,
+        passengerName: 'Jackson Olaf',
+        phone: '2056547894',
+        email: 'jacks@gmail.com',
+        airline: 'DL',
+        flightNumber: '6545',
+        route: 'LAX-PHX',
+        flightTime: '2:30pm - 2:40pm',
+        flightLocator: 'ASDKJA',
+        airBookedDate: '2025-07-09',
+        notes: ''
       },
       '1001': {
-        projectCode: 1001, passengerName: 'Paul Wallin', phone: '2084078127',
-        email: 'paul@wallinexpress.com', airline: 'DL', flightNumber: '5465',
-        route: 'PHX-LAX', flightTime: '12:01pm - 2:00pm', flightLocator: 'AZDSZD',
-        ticketPrice: '', pickupLocation: '', dropLocation: '',
-        airBookedDate: '2025-07-01', notes: ''
+        projectCode: 1001,
+        passengerName: 'Paul Wallin',
+        phone: '2084078127',
+        email: 'paul@wallinexpress.com',
+        airline: 'DL',
+        flightNumber: '5465',
+        route: 'PHX-LAX',
+        flightTime: '12:01pm - 2:00pm',
+        flightLocator: 'AZDSZD',
+        airBookedDate: '2025-07-01',
+        notes: ''
       }
     };
 
     function getQueryParam(key) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(key);
+    }
+
+    function formatDate(dateStr) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateStr).toLocaleDateString(undefined, options);
     }
 
     function renderItinerary(code) {
@@ -97,89 +114,32 @@
         <div class="section"><strong>Route:</strong> ${data.route}</div>
         <div class="section"><strong>Flight Time:</strong> ${data.flightTime}</div>
         <div class="section"><strong>Record Locator:</strong> ${data.flightLocator}</div>
-        <div class="section"><strong>Booked Date:</strong> ${data.airBookedDate || "—"}</div>
+        <div class="section"><strong>Booked Date:</strong> ${formatDate(data.airBookedDate)}</div>
         <div class="section"><strong>Notes:</strong> ${data.notes || "—"}</div>
       `;
+
+      const subject = `${data.projectCode} - ${data.passengerName} - ${formatDate(data.airBookedDate)} - ${data.route}`;
+      const body = encodeURIComponent(`
+        <html><body style="font-family: Arial; color: #333;">
+        <h2>✈️ Traveler Itinerary</h2>
+        <p><strong>Passenger:</strong> ${data.passengerName}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Airline:</strong> ${data.airline}</p>
+        <p><strong>Flight Number:</strong> ${data.flightNumber}</p>
+        <p><strong>Route:</strong> ${data.route}</p>
+        <p><strong>Flight Time:</strong> ${data.flightTime}</p>
+        <p><strong>Record Locator:</strong> ${data.flightLocator}</p>
+        <p><strong>Booked Date:</strong> ${formatDate(data.airBookedDate)}</p>
+        <p><strong>Notes:</strong> ${data.notes || "—"}</p>
+        </body></html>
+      `);
+
+      document.getElementById("emailBtn").href = `mailto:${data.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
     }
 
     const code = getQueryParam("code") || "unknown";
     renderItinerary(code);
-
-    const emailBtn = document.getElementById("emailBtn");
-    emailBtn.href = `mailto:?subject=Traveler Itinerary for Code ${code}&body=Click this link to view your itinerary:%0Ahttps://aeromkt.github.io/TIT/itinerary_by_code_FIXED.html?code=${code}`;
   </script>
-<script>
-const travelerLookup = {
-  '5452': {
-    projectCode: 5452,
-    passengerName: 'Jackson Olaf',
-    phone: '2056547894',
-    email: 'jacks@gmail.com',
-    airline: 'DL',
-    flightNumber: 6545,
-    route: 'LAX-PHX',
-    flightTime: '2:30pm - 2:40pm',
-    flightLocator: 'ASDKJA',
-    airBookedDate: '2025-07-09',
-    notes: ''
-  },
-  '1001': {
-    projectCode: 1001,
-    passengerName: 'Paul Wallin',
-    phone: '2084078127',
-    email: 'paul@wallinexpress.com',
-    airline: 'DL',
-    flightNumber: 5465,
-    route: 'PHX-LAX',
-    flightTime: '12:01pm - 2:00pm',
-    flightLocator: 'AZDSZD',
-    airBookedDate: '2025-07-01',
-    notes: ''
-  }
-};
-
-function getQueryParam(key) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(key);
-}
-
-function formatDate(dateStr) {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateStr).toLocaleDateString(undefined, options);
-}
-
-function renderItinerary(code) {
-  const data = travelerLookup[code];
-  const output = document.getElementById("output");
-  if (!data) {
-    output.innerHTML = `<p class='not-found'>❌ No itinerary found for project code: <strong>${code}</strong></p>`;
-    return;
-  }
-
-  output.innerHTML = `
-      <div class="section"><strong>Project Code:</strong> ${data.projectCode}</div>
-      <div class="section"><strong>Passenger:</strong> ${data.passengerName}</div>
-      <div class="section"><strong>Phone:</strong> ${data.phone}</div>
-      <div class="section"><strong>Email:</strong> ${data.email}</div>
-      <div class="section"><strong>Airline:</strong> ${data.airline}</div>
-      <div class="section"><strong>Flight Number:</strong> ${data.flightNumber}</div>
-      <div class="section"><strong>Route:</strong> ${data.route}</div>
-      <div class="section"><strong>Flight Time:</strong> ${data.flightTime}</div>
-      <div class="section"><strong>Record Locator:</strong> ${data.flightLocator}</div>
-      <div class="section"><strong>Booked Date:</strong> ${data.airBookedDate || "—"}</div>
-      <div class="section"><strong>Notes:</strong> ${data.notes || "—"}</div>
-  `;
-}
-
-function generateEmailBody(data) {
-  return `
-    <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
-      <h2 style="color:#2c3e50;">✈️ Traveler Itinerary</h2>
-      <p><strong>Passenger:</strong> ${data.passengerName}</p>
-      <p><strong>Phone:</strong> ${data.phone}</p>
-      <p><strong>Email:</strong> ${data.email}</p>
-      <p><strong>Airline:</strong> ${data.airline}</p>
-      <p><strong>Flight Number:</strong> ${data.flightNumber}<
 </body>
 </html>
