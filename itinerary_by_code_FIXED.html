@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveler Itinerary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        strong {
+            display: inline-block;
+            min-width: 160px;
+            color: #34495e;
+        }
+        .not-found {
+            text-align: center;
+            color: red;
+            margin-top: 50px;
+        }
+        .print-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="itineraryContent">
+        <h1>✈️ Traveler Itinerary</h1>
+        <div id="output"></div>
+        <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+    </div>
+
+    <script>
+    const travelerLookup = {'5452': {'projectCode': 5452, 'passengerName': 'Jackson Olaf', 'phone': 2056547894, 'email': 'jacks@gmail.com', 'airline': 'DL', 'flightNumber': 6545, 'route': 'LAX-PHX', 'flightTime': '2:30pm - 2:40pm', 'flightLocator': 'ASDKJA', 'ticketPrice': '', 'pickupLocation': '', 'dropLocation': '', 'airBookedDate': '2025-07-09', 'notes': ''}, '1001': {'projectCode': 1001, 'passengerName': 'Paul Wallin', 'phone': 2084078127, 'email': 'paul@wallinexpress.com', 'airline': 'DL', 'flightNumber': 5465, 'route': 'PHX-LAX', 'flightTime': '12:01pm - 2:00pm', 'flightLocator': 'AZDSZD', 'ticketPrice': '', 'pickupLocation': '', 'dropLocation': '', 'airBookedDate': '2025-07-01', 'notes': ''}};
+
+    function getQueryParam(key) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(key);
+    }
+
+    function renderItinerary(code) {
+        const data = travelerLookup[code];
+        const output = document.getElementById("output");
+        if (!data) {
+            output.innerHTML = `<p class='not-found'>❌ No itinerary found for project code: <strong>${code}</strong></p>`;
+            return;
+        }
+
+        output.innerHTML = `
+            <div class="section"><strong>Project Code:</strong> ${data.projectCode}</div>
+            <div class="section"><strong>Passenger:</strong> ${data.passengerName}</div>
+            <div class="section"><strong>Phone:</strong> ${data.phone}</div>
+            <div class="section"><strong>Email:</strong> ${data.email}</div>
+            <div class="section"><strong>Airline:</strong> ${data.airline}</div>
+            <div class="section"><strong>Flight Number:</strong> ${data.flightNumber}</div>
+            <div class="section"><strong>Route:</strong> ${data.route}</div>
+            <div class="section"><strong>Flight Time:</strong> ${data.flightTime}</div>
+            <div class="section"><strong>Record Locator:</strong> ${data.flightLocator}</div>
+            <div class="section"><strong>Booked Date:</strong> ${data.airBookedDate || "—"}</div>
+            <div class="section"><strong>Notes:</strong> ${data.notes || "—"}</div>
+        `;
+    }
+
+    const projectCode = getQueryParam("code");
+    renderItinerary(projectCode);
+    </script>
+</body>
+</html>
